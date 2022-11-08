@@ -1,0 +1,123 @@
+import telebot
+from telebot import types
+
+
+bot = telebot.TeleBot('5486937107:AAFh3Q_WHGvFnNW5KBhlK_zb_HPe2z0kIGE')
+
+# @bot.message_handler(commands=['start'])
+# def start(message):
+#    mess = f'Привет, <b>{message.from_user.first_name} <u>{message.from_user.last_name}</u></b>'
+#     bot.send_message(message.chat.id, mess, parse_mode= 'html')
+
+
+
+
+@bot.message_handler(commands = ['start'])
+def get_user_info(message):
+    markup_inline = types.InlineKeyboardMarkup()
+    item_tic_tac_toe = types.InlineKeyboardButton(text = 'Крестики-Нолики', callback_data = 'tic-tac-toe')
+    item_calculator = types.InlineKeyboardButton(text = 'Калькулятор', callback_data = 'calculator')
+    item_phone_book = types.InlineKeyboardButton(text='Телефонный справочник', callback_data='phone book')
+
+    markup_inline.add(item_tic_tac_toe, item_calculator, item_phone_book)
+    mess = f'Добрый день, {message.from_user.first_name} {message.from_user.last_name}, выбирайте, что будем проверять:)'
+    bot.send_message(message.chat.id, mess,
+        reply_markup = markup_inline
+    )
+
+
+
+#Первая кнопка с крестиками ноликами
+
+
+@bot.callback_query_handler(func = lambda call: True)
+def answer(call):
+    if call.data == 'tic-tac-toe':
+        markup_reply = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item_id = types.KeyboardButton('Давай играть')
+        item_username = types.KeyboardButton('Вернуться в меню')
+
+        markup_reply.add(item_id, item_username)
+        bot.send_message(call.message.chat.id, 'Хотите сыграть в крестики-нолики?', reply_markup = markup_reply)
+
+
+    elif call.data == 'calculator':
+        pass
+
+    elif call.data == 'phone book':
+        pass
+
+
+@bot.message_handler(content_types = ['text'])
+def get_text(message):
+    if message.text == 'Давай играть':
+        bot.send_message(message.chat.id, f'Твой ID: {message.from_user.id}')
+    elif message.text == 'Вернуться в меню':
+        bot.send_message(message.chat.id, f'Твой ID: {message.from_user.first_name}{message.from_user.last_name}')
+
+
+
+
+
+
+
+# Вторая кнопка с калькулятором
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def answer(call):
+    if call.data == 'calculator':
+        markup_reply = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item_id = types.KeyboardButton('Мой ID')
+        item_username = types.KeyboardButton('Мой ник')
+
+        markup_reply.add(item_id, item_username)
+        bot.send_message(call.message.chat.id, 'Выбери одну кнопку)', reply_markup=markup_reply)
+
+
+    elif call.data == 'no':
+        pass
+
+
+@bot.message_handler(content_types=['text'])
+def get_text(message):
+    if message.text == 'Мой ID':
+        bot.send_message(message.chat.id, f'Твой ID: {message.from_user.id}')
+    elif message.text == 'Мой ник':
+        bot.send_message(message.chat.id, f'Твой ID: {message.from_user.first_name}{message.from_user.last_name}')
+
+
+
+
+
+
+
+#Третья кнопка с телефонной книгой
+
+
+@bot.callback_query_handler(func = lambda call: True)
+def answer(call):
+    if call.data == 'phone book':
+        markup_reply = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item_id = types.KeyboardButton('Мой ID')
+        item_username = types.KeyboardButton('Мой ник')
+
+        markup_reply.add(item_id, item_username)
+        bot.send_message(call.message.chat.id, 'Выбери одну кнопку)', reply_markup = markup_reply)
+
+
+    elif call.data == 'no':
+        pass
+
+@bot.message_handler(content_types = ['text'])
+def get_text(message):
+    if message.text == 'Мой ID':
+        bot.send_message(message.chat.id, f'Твой ID: {message.from_user.id}')
+    elif message.text == 'Мой ник':
+        bot.send_message(message.chat.id, f'Твой ID: {message.from_user.first_name}{message.from_user.last_name}')
+
+
+
+
+
+bot.polling(none_stop=True)
