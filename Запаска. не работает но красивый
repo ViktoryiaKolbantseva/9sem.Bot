@@ -1,0 +1,83 @@
+import telebot
+from telebot import types
+
+
+
+bot = telebot.TeleBot('5486937107:AAHGRAITKi5Aq344Nq7hEmJtccd-HvPjR2Q')
+
+
+
+
+
+@bot.message_handler(commands = ['start'])
+def get_user_info(message):
+    markup_inline = types.InlineKeyboardMarkup()
+    item_tic_tac_toe = types.InlineKeyboardButton(text = 'Крестики-Нолики', callback_data = 'tic-tac-toe')
+    item_calculator = types.InlineKeyboardButton(text = 'Калькулятор', callback_data = 'calculator')
+    item_phone_book = types.InlineKeyboardButton(text='Телефонный справочник', callback_data='phone book')
+
+    markup_inline.add(item_tic_tac_toe, item_calculator, item_phone_book)
+
+    mess = f'Добрый день, {message.from_user.first_name} {message.from_user.last_name}, выбирайте, что будем проверять:)'
+    bot.send_message(message.chat.id, mess,
+        reply_markup = markup_inline
+    )
+
+
+
+#Первая кнопка с крестиками ноликами
+
+
+@bot.callback_query_handler(func = lambda call: True)
+def answer(call):
+    if call.data == 'tic-tac-toe':
+        markup_reply = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item_play = types.KeyboardButton('Давай играть')
+        item_menu = types.KeyboardButton('Вернуться в меню')
+
+        markup_reply.add(item_play, item_menu)
+
+        bot.send_message(call.message.chat.id, 'Хотите сыграть в крестики-нолики?', reply_markup = markup_reply)
+
+
+# Калькулятор
+    elif call.data == 'calculator':
+        markup_reply = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item_id = types.KeyboardButton('Мой ID')
+        item_username = types.KeyboardButton('Мой ник')
+
+        markup_reply.add(item_id, item_username)
+        bot.send_message(call.message.chat.id, 'Выбери одну кнопку)', reply_markup=markup_reply)
+
+
+#Телефонная книга
+    elif call.data == 'phone book':
+        markup_reply = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item_id = types.KeyboardButton('Мой ID')
+        item_username = types.KeyboardButton('Мой ник')
+
+        markup_reply.add(item_id, item_username)
+        bot.send_message(call.message.chat.id, 'Выбери одну кнопку)', reply_markup=markup_reply)
+
+
+
+#Вернуться в меню
+    elif message.text == 'Вернуться в меню':
+        markup_inline = types.InlineKeyboardMarkup()
+        item_tic_tac_toe = types.InlineKeyboardButton(text='Крестики-Нолики', callback_data='tic-tac-toe')
+        item_calculator = types.InlineKeyboardButton(text='Калькулятор', callback_data='calculator')
+        item_phone_book = types.InlineKeyboardButton(text='Телефонный справочник', callback_data='phone book')
+
+        markup_inline.add(item_tic_tac_toe, item_calculator, item_phone_book)
+
+        mess = f'Что ж, {message.from_user.first_name} {message.from_user.last_name}, давайте выбирать, что будем проверять еще:)'
+        bot.send_message(message.chat.id, mess,
+                         reply_markup=markup_inline
+                         )
+
+
+
+
+
+
+bot.polling(none_stop=True)
